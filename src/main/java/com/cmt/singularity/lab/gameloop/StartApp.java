@@ -25,8 +25,10 @@
 //</editor-fold>
 package com.cmt.singularity.lab.gameloop;
 
+import com.cmt.singularity.Singularity;
 import com.cmt.singularity.tasks.Task;
 import com.cmt.singularity.tasks.TaskGroup;
+import com.cmt.singularity.tasks.Tasks;
 import de.s42.log.LogManager;
 import de.s42.log.Logger;
 
@@ -34,72 +36,50 @@ import de.s42.log.Logger;
  *
  * @author Benjamin Schiller
  */
-public class BeginFrame implements Task
+public class StartApp implements Task
 {
 
 	@SuppressWarnings("unused")
-	private final static Logger log = LogManager.getLogger(BeginFrame.class.getName());
+	private final static Logger log = LogManager.getLogger(StartApp.class.getName());
 
-	protected TaskGroup taskGroup;
+	protected Singularity singularity;
 
-	protected Task after;
-
-	private int count;
-
-	public BeginFrame()
+	public StartApp()
 	{
 	}
 
-	public BeginFrame(TaskGroup taskGroup, Task after)
+	public StartApp(Singularity singularity)
 	{
-		this.taskGroup = taskGroup;
-		this.after = after;
+		this.singularity = singularity;
 	}
 
 	@Override
 	public void execute()
 	{
-		log.debug("Count", count);
+		Tasks tasks = singularity.getTasks();
 
-		// Schedule frame
-		synchronized (Thread.currentThread()) {
-			try {
-				Thread.currentThread().wait(50);
-			} catch (InterruptedException ex) {
-				log.error(ex);
-			}
-		}
+		TaskGroup mainGroup = tasks.getTaskGroupByName("Main").orElseThrow();
 
-		count++;
+		// Set up task groups
+		TaskGroup renderGroup = tasks.createTaskGroup("Render", 1, 1000, true);
+		TaskGroup workerGroup = tasks.createTaskGroup("Worker", 4, 1000, true);
 
-		if (count < 10) {
-			taskGroup.parallel(this);
-			return;
-		}
+		// End app task
+		Task endApp = new EndApp(singularity);
 
-		// Run task after if set
-		if (after != null) {
-			taskGroup.parallel(after);
-		}
+		// Initiate first frame begin
+		Task beginFrame = new BeginFrame(mainGroup, endApp);
+
+		mainGroup.parallel(beginFrame);
 	}
 
-	public TaskGroup getTaskGroup()
+	public Singularity getSingularity()
 	{
-		return taskGroup;
+		return singularity;
 	}
 
-	public void setTaskGroup(TaskGroup taskGroup)
+	public void setSingularity(Singularity singularity)
 	{
-		this.taskGroup = taskGroup;
-	}
-
-	public Task getAfter()
-	{
-		return after;
-	}
-
-	public void setAfter(Task after)
-	{
-		this.after = after;
+		this.singularity = singularity;
 	}
 }
