@@ -25,11 +25,9 @@
 //</editor-fold>
 package com.cmt.singularity.lab.gameloop;
 
-import com.cmt.singularity.Singularity;
+import com.cmt.singularity.assertion.Assert;
 import com.cmt.singularity.tasks.Task;
 import com.cmt.singularity.tasks.Tasks;
-import de.s42.log.LogManager;
-import de.s42.log.Logger;
 
 /**
  *
@@ -38,36 +36,22 @@ import de.s42.log.Logger;
 public class EndApp implements Task
 {
 
-	@SuppressWarnings("unused")
-	private final static Logger log = LogManager.getLogger(EndApp.class.getName());
+	private final static Assert assertion = Assert.getAssert(EndApp.class.getName());
 
-	protected Singularity singularity;
+	protected final Tasks tasks;
 
-	public EndApp()
+	public EndApp(Tasks tasks)
 	{
-	}
+		assertion.assertNotNull(tasks, "tasks != null");
 
-	public EndApp(Singularity singularity)
-	{
-		this.singularity = singularity;
+		this.tasks = tasks;
 	}
 
 	@Override
 	public void execute()
 	{
-		Tasks tasks = singularity.getTasks();
-
-		// Signal app to shut down - dont await - this will cause a dead lock!
+		// Signal app to shut down.
+		// ATTENTION: dont await() the returned barrier -> this will cause a dead lock!
 		tasks.endGracefully();
-	}
-
-	public Singularity getSingularity()
-	{
-		return singularity;
-	}
-
-	public void setSingularity(Singularity singularity)
-	{
-		this.singularity = singularity;
 	}
 }

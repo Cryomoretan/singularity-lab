@@ -25,6 +25,8 @@
 //</editor-fold>
 package com.cmt.singularity.lab.gameloop;
 
+import com.cmt.singularity.Configuration;
+import com.cmt.singularity.assertion.Assert;
 import com.cmt.singularity.tasks.Task;
 import com.cmt.singularity.tasks.TaskGroup;
 import de.s42.log.LogManager;
@@ -37,23 +39,32 @@ import de.s42.log.Logger;
 public class BeginFrame implements Task
 {
 
+	private final static Assert assertion = Assert.getAssert(BeginFrame.class.getName());
+
+	public static final String COFIGURATION_BEGIN_FRAME_MAX_COUNT_KEY = "com.cmt.singularity.lab.gameloop.BeginFrame.maxCount";
+	public static final int COFIGURATION_BEGIN_FRAME_MAX_COUNT_DEFAULT = 0;
+
 	@SuppressWarnings("unused")
 	private final static Logger log = LogManager.getLogger(BeginFrame.class.getName());
 
-	protected TaskGroup taskGroup;
+	protected final TaskGroup taskGroup;
 
-	protected Task after;
+	protected final Task after;
 
-	private int count;
+	protected final int maxCount;
 
-	public BeginFrame()
+	protected int count;
+
+	public BeginFrame(Configuration configuration, TaskGroup taskGroup, Task after)
 	{
-	}
+		assertion.assertNotNull(configuration, "configuration != null");
+		assertion.assertNotNull(taskGroup, "taskGroup != null");
+		assertion.assertNotNull(after, "after != null");
 
-	public BeginFrame(TaskGroup taskGroup, Task after)
-	{
 		this.taskGroup = taskGroup;
 		this.after = after;
+
+		maxCount = configuration.getInt(COFIGURATION_BEGIN_FRAME_MAX_COUNT_KEY, COFIGURATION_BEGIN_FRAME_MAX_COUNT_DEFAULT);
 	}
 
 	@Override
@@ -70,9 +81,9 @@ public class BeginFrame implements Task
 			}
 		}
 
+		// Repeat this task X times
 		count++;
-
-		if (count < 10) {
+		if (count < maxCount) {
 			taskGroup.parallel(this);
 			return;
 		}
@@ -81,25 +92,5 @@ public class BeginFrame implements Task
 		if (after != null) {
 			taskGroup.parallel(after);
 		}
-	}
-
-	public TaskGroup getTaskGroup()
-	{
-		return taskGroup;
-	}
-
-	public void setTaskGroup(TaskGroup taskGroup)
-	{
-		this.taskGroup = taskGroup;
-	}
-
-	public Task getAfter()
-	{
-		return after;
-	}
-
-	public void setAfter(Task after)
-	{
-		this.after = after;
 	}
 }

@@ -25,12 +25,11 @@
 //</editor-fold>
 package com.cmt.singularity.lab.gameloop;
 
-import com.cmt.singularity.Singularity;
+import com.cmt.singularity.Configuration;
+import com.cmt.singularity.assertion.Assert;
 import com.cmt.singularity.tasks.Task;
 import com.cmt.singularity.tasks.TaskGroup;
 import com.cmt.singularity.tasks.Tasks;
-import de.s42.log.LogManager;
-import de.s42.log.Logger;
 
 /**
  *
@@ -39,47 +38,45 @@ import de.s42.log.Logger;
 public class StartApp implements Task
 {
 
-	@SuppressWarnings("unused")
-	private final static Logger log = LogManager.getLogger(StartApp.class.getName());
+	private final static Assert assertion = Assert.getAssert(StartApp.class.getName());
 
-	protected Singularity singularity;
+	public static final String COFIGURATION_START_APP_RENDER_WORKER_KEY = "com.cmt.singularity.lab.gameloop.StartApp.renderWorkers";
+	public static final int COFIGURATION_START_APP_RENDER_WORKER_DEFAULT = 1;
 
-	public StartApp()
+	public static final String COFIGURATION_START_APP_WORKER_WORKER_KEY = "com.cmt.singularity.lab.gameloop.StartApp.workerWorkers";
+	public static final int COFIGURATION_START_APP_WORKER_WORKER_KEY_DEFAULT = 4;
+
+	protected final Tasks tasks;
+	protected final TaskGroup mainGroup;
+	protected final Configuration configuration;
+
+	public StartApp(Configuration configuration, Tasks tasks, TaskGroup mainGroup)
 	{
-	}
+		assertion.assertNotNull(configuration, "configuration != null");
+		assertion.assertNotNull(tasks, "tasks != null");
+		assertion.assertNotNull(mainGroup, "mainGroup != null");
 
-	public StartApp(Singularity singularity)
-	{
-		this.singularity = singularity;
+		this.tasks = tasks;
+		this.mainGroup = mainGroup;
+		this.configuration = configuration;
 	}
 
 	@Override
 	public void execute()
 	{
-		Tasks tasks = singularity.getTasks();
+		// Set up render group
+		int renderWorkers = configuration.getInt(COFIGURATION_START_APP_RENDER_WORKER_KEY, COFIGURATION_START_APP_RENDER_WORKER_DEFAULT);
+		tasks.createTaskGroup("Render", renderWorkers, 100, true);
 
-		TaskGroup mainGroup = tasks.getTaskGroupByName("Main").orElseThrow();
-
-		// Set up task groups
-		TaskGroup renderGroup = tasks.createTaskGroup("Render", 1, 1000, true);
-		TaskGroup workerGroup = tasks.createTaskGroup("Worker", 4, 1000, true);
+		// Set up worker group
+		int workerWorkers = configuration.getInt(COFIGURATION_START_APP_WORKER_WORKER_KEY, COFIGURATION_START_APP_WORKER_WORKER_KEY_DEFAULT);
+		tasks.createTaskGroup("Worker", workerWorkers, 100, true);
 
 		// End app task
-		Task endApp = new EndApp(singularity);
+		Task endApp = new EndApp(tasks);
 
-		// Initiate first frame begin
-		Task beginFrame = new BeginFrame(mainGroup, endApp);
-
+		// Create and schedule first frame begin
+		Task beginFrame = new BeginFrame(configuration, mainGroup, endApp);
 		mainGroup.parallel(beginFrame);
-	}
-
-	public Singularity getSingularity()
-	{
-		return singularity;
-	}
-
-	public void setSingularity(Singularity singularity)
-	{
-		this.singularity = singularity;
 	}
 }
