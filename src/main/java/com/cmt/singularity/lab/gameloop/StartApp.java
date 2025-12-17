@@ -27,6 +27,7 @@ package com.cmt.singularity.lab.gameloop;
 
 import com.cmt.singularity.Configuration;
 import com.cmt.singularity.assertion.Assert;
+import static com.cmt.singularity.lab.gameloop.Main.*;
 import com.cmt.singularity.tasks.Task;
 import com.cmt.singularity.tasks.TaskGroup;
 import com.cmt.singularity.tasks.Tasks;
@@ -39,12 +40,6 @@ public class StartApp implements Task
 {
 
 	private final static Assert assertion = Assert.getAssert(StartApp.class.getName());
-
-	public static final String COFIGURATION_START_APP_RENDER_WORKER_KEY = "com.cmt.singularity.lab.gameloop.StartApp.renderWorkers";
-	public static final int COFIGURATION_START_APP_RENDER_WORKER_DEFAULT = 1;
-
-	public static final String COFIGURATION_START_APP_WORKER_WORKER_KEY = "com.cmt.singularity.lab.gameloop.StartApp.workerWorkers";
-	public static final int COFIGURATION_START_APP_WORKER_WORKER_KEY_DEFAULT = 4;
 
 	protected final Tasks tasks;
 	protected final TaskGroup mainGroup;
@@ -65,11 +60,11 @@ public class StartApp implements Task
 	public void execute()
 	{
 		// Set up render group
-		int renderWorkers = configuration.getInt(COFIGURATION_START_APP_RENDER_WORKER_KEY, COFIGURATION_START_APP_RENDER_WORKER_DEFAULT);
+		int renderWorkers = configuration.getInt(COFIGURATION_RENDER_WORKER_KEY, COFIGURATION_RENDER_WORKER_DEFAULT);
 		tasks.createTaskGroup("Render", renderWorkers, 100, true);
 
 		// Set up worker group
-		int workerWorkers = configuration.getInt(COFIGURATION_START_APP_WORKER_WORKER_KEY, COFIGURATION_START_APP_WORKER_WORKER_KEY_DEFAULT);
+		int workerWorkers = configuration.getInt(COFIGURATION_WORKER_WORKER_KEY, COFIGURATION_WORKER_WORKER_KEY_DEFAULT);
 		tasks.createTaskGroup("Worker", workerWorkers, 100, true);
 
 		// End app task

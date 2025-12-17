@@ -52,6 +52,8 @@ public class EndApp implements Task
 	{
 		// Signal app to shut down.
 		// ATTENTION: dont await() the returned barrier -> this will cause a dead lock!
-		tasks.endGracefully();
+		if (!tasks.isEnding()) {
+			tasks.endGracefully();
+		}
 	}
 }

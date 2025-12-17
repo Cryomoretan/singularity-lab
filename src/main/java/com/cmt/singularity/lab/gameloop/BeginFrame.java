@@ -27,6 +27,8 @@ package com.cmt.singularity.lab.gameloop;
 
 import com.cmt.singularity.Configuration;
 import com.cmt.singularity.assertion.Assert;
+import static com.cmt.singularity.lab.gameloop.Main.COFIGURATION_MAX_FRAME_COUNT_DEFAULT;
+import static com.cmt.singularity.lab.gameloop.Main.COFIGURATION_MAX_FRAME_COUNT_KEY;
 import com.cmt.singularity.tasks.Task;
 import com.cmt.singularity.tasks.TaskGroup;
 import de.s42.log.LogManager;
@@ -39,13 +41,9 @@ import de.s42.log.Logger;
 public class BeginFrame implements Task
 {
 
-	private final static Assert assertion = Assert.getAssert(BeginFrame.class.getName());
-
-	public static final String COFIGURATION_BEGIN_FRAME_MAX_COUNT_KEY = "com.cmt.singularity.lab.gameloop.BeginFrame.maxCount";
-	public static final int COFIGURATION_BEGIN_FRAME_MAX_COUNT_DEFAULT = 0;
-
-	@SuppressWarnings("unused")
 	private final static Logger log = LogManager.getLogger(BeginFrame.class.getName());
+
+	private final static Assert assertion = Assert.getAssert(BeginFrame.class.getName());
 
 	protected final TaskGroup taskGroup;
 
@@ -64,7 +62,9 @@ public class BeginFrame implements Task
 		this.taskGroup = taskGroup;
 		this.after = after;
 
-		maxCount = configuration.getInt(COFIGURATION_BEGIN_FRAME_MAX_COUNT_KEY, COFIGURATION_BEGIN_FRAME_MAX_COUNT_DEFAULT);
+		maxCount = configuration.getInt(COFIGURATION_MAX_FRAME_COUNT_KEY, COFIGURATION_MAX_FRAME_COUNT_DEFAULT);
+
+		assertion.assertTrue(maxCount >= 0, "maxCount >= 0");
 	}
 
 	@Override
@@ -83,14 +83,12 @@ public class BeginFrame implements Task
 
 		// Repeat this task X times
 		count++;
-		if (count < maxCount) {
+		if (count <= maxCount) {
 			taskGroup.parallel(this);
 			return;
 		}
 
 		// Run task after if set
-		if (after != null) {
-			taskGroup.parallel(after);
-		}
+		taskGroup.parallel(after);
 	}
 }

@@ -41,4 +41,6 @@ module com.cmt.singularity.lab
 	requires org.lwjgl.assimp;
 	requires org.lwjgl.openal;
 	requires org.joml;
+
+	exports com.cmt.singularity.lab.gameloop;
 }
