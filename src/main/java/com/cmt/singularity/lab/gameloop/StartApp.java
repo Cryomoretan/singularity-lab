@@ -51,20 +51,20 @@ public class StartApp implements Task
 		assertion.assertNotNull(tasks, "tasks != null");
 		assertion.assertNotNull(mainGroup, "mainGroup != null");
 
+		this.configuration = configuration;
 		this.tasks = tasks;
 		this.mainGroup = mainGroup;
-		this.configuration = configuration;
 	}
 
 	@Override
 	public void execute()
 	{
 		// Set up render group
-		int renderWorkers = configuration.getInt(COFIGURATION_RENDER_WORKER_KEY, COFIGURATION_RENDER_WORKER_DEFAULT);
+		int renderWorkers = configuration.getInt(CONFIGURATION_RENDER_WORKER_KEY, CONFIGURATION_RENDER_WORKER_DEFAULT);
 		tasks.createTaskGroup("Render", renderWorkers, 100, true);
 
 		// Set up worker group
-		int workerWorkers = configuration.getInt(COFIGURATION_WORKER_WORKER_KEY, COFIGURATION_WORKER_WORKER_KEY_DEFAULT);
+		int workerWorkers = configuration.getInt(CONFIGURATION_WORKER_WORKER_KEY, CONFIGURATION_WORKER_WORKER_KEY_DEFAULT);
 		tasks.createTaskGroup("Worker", workerWorkers, 100, true);
 
 		// End app task

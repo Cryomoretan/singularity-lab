@@ -27,8 +27,8 @@ package com.cmt.singularity.lab.gameloop;
 
 import com.cmt.singularity.Configuration;
 import com.cmt.singularity.assertion.Assert;
-import static com.cmt.singularity.lab.gameloop.Main.COFIGURATION_MAX_FRAME_COUNT_DEFAULT;
-import static com.cmt.singularity.lab.gameloop.Main.COFIGURATION_MAX_FRAME_COUNT_KEY;
+import static com.cmt.singularity.lab.gameloop.Main.CONFIGURATION_MAX_FRAME_COUNT_DEFAULT;
+import static com.cmt.singularity.lab.gameloop.Main.CONFIGURATION_MAX_FRAME_COUNT_KEY;
 import com.cmt.singularity.tasks.Task;
 import com.cmt.singularity.tasks.TaskGroup;
 import de.s42.log.LogManager;
@@ -59,12 +59,12 @@ public class BeginFrame implements Task
 		assertion.assertNotNull(taskGroup, "taskGroup != null");
 		assertion.assertNotNull(after, "after != null");
 
-		this.taskGroup = taskGroup;
-		this.after = after;
-
-		maxCount = configuration.getInt(COFIGURATION_MAX_FRAME_COUNT_KEY, COFIGURATION_MAX_FRAME_COUNT_DEFAULT);
+		maxCount = configuration.getInt(CONFIGURATION_MAX_FRAME_COUNT_KEY, CONFIGURATION_MAX_FRAME_COUNT_DEFAULT);
 
 		assertion.assertTrue(maxCount >= 0, "maxCount >= 0");
+
+		this.taskGroup = taskGroup;
+		this.after = after;
 	}
 
 	@Override
