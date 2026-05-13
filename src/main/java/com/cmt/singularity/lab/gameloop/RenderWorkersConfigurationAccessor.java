@@ -41,25 +41,25 @@ public final class RenderWorkersConfigurationAccessor implements ConfigurationAc
 	/**
 	 * Key in config for renderWorkers
 	 */
-	public static final String CONFIGURATION_RENDER_WORKERS_KEY = "com.cmt.singularity.lab.gameloop.renderWorkers";
+	public static final String KEY = "com.cmt.singularity.lab.gameloop.renderWorkers";
 
 	/**
 	 * Default in config for renderWorkers
 	 */
-	public static final int CONFIGURATION_RENDER_WORKERS_DEFAULT = 1;
+	public static final int DEFAULT = 1;
 
 	public static int getRenderWorkers(Configuration configuration)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
-		return configuration.getInt(CONFIGURATION_RENDER_WORKERS_KEY, CONFIGURATION_RENDER_WORKERS_DEFAULT);
+		return configuration.getInt(KEY, DEFAULT);
 	}
 
 	public static void setRenderWorkers(Configuration configuration, int renderWorkers)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
-		configuration.set(CONFIGURATION_RENDER_WORKERS_KEY, renderWorkers);
+		configuration.set(KEY, renderWorkers);
 	}
 
 	@SuppressWarnings("unused")

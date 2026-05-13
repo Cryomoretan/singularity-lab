@@ -41,25 +41,25 @@ public final class MaxFrameCountConfigurationAccessor implements ConfigurationAc
 	/**
 	 * Key in config for maxFrameCount
 	 */
-	public static final String CONFIGURATION_MAX_FRAME_COUNT_KEY = "com.cmt.singularity.lab.gameloop.maxFrameCount";
+	public static final String KEY = "com.cmt.singularity.lab.gameloop.maxFrameCount";
 
 	/**
 	 * Default in config for maxFrameCount
 	 */
-	public static final int CONFIGURATION_MAX_FRAME_COUNT_DEFAULT = 12;
+	public static final int DEFAULT = 12;
 
 	public static int getMaxFrameCount(Configuration configuration)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
-		return configuration.getInt(CONFIGURATION_MAX_FRAME_COUNT_KEY, CONFIGURATION_MAX_FRAME_COUNT_DEFAULT);
+		return configuration.getInt(KEY, DEFAULT);
 	}
 
 	public static void setMaxFrameCount(Configuration configuration, int maxFrameCount)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
-		configuration.set(CONFIGURATION_MAX_FRAME_COUNT_KEY, maxFrameCount);
+		configuration.set(KEY, maxFrameCount);
 	}
 
 	@SuppressWarnings("unused")

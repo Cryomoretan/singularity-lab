@@ -41,25 +41,25 @@ public final class WorkerWorkersConfigurationAccessor implements ConfigurationAc
 	/**
 	 * Key in config for workerWorkers
 	 */
-	public static final String CONFIGURATION_WORKER_WORKERS_KEY = "com.cmt.singularity.lab.gameloop.workerWorkers";
+	public static final String KEY = "com.cmt.singularity.lab.gameloop.workerWorkers";
 
 	/**
 	 * Default in config for workerWorkers
 	 */
-	public static final int CONFIGURATION_WORKER_WORKERS_DEFAULT = 4;
+	public static final int DEFAULT = 4;
 
 	public static int getWorkerWorkers(Configuration configuration)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
-		return configuration.getInt(CONFIGURATION_WORKER_WORKERS_KEY, CONFIGURATION_WORKER_WORKERS_DEFAULT);
+		return configuration.getInt(KEY, DEFAULT);
 	}
 
 	public static void setWorkerWorkers(Configuration configuration, int workerWorkers)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
-		configuration.set(CONFIGURATION_WORKER_WORKERS_KEY, workerWorkers);
+		configuration.set(KEY, workerWorkers);
 	}
 
 	@SuppressWarnings("unused")
