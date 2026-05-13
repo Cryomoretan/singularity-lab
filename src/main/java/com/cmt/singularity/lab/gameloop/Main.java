@@ -8,8 +8,8 @@ import com.cmt.singularity.tasks.Tasks;
 
 /**
  *
- * Set a custom value for configurations i.e. with -com.cmt.singularity.lab.gameloop.maxFrameCount=X etc. - see
- * ConfigurationAccessors
+ * Set a custom value for configurations via cmd i.e. with -com.cmt.singularity.lab.gameloop.maxFrameCount=X etc. - see
+ * ConfigurationAccessors or use the ConfigurationAccessors setters in Java code
  *
  * @author Benjamin Schiller
  */
