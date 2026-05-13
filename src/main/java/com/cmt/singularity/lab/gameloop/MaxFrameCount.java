@@ -33,37 +33,37 @@ import com.cmt.singularity.assertion.Assert;
  *
  * @author Benjamin Schiller
  */
-public final class RenderWorkersConfigurationAccessor implements ConfigurationAccessor
+public final class MaxFrameCount implements ConfigurationAccessor
 {
 
-	public final static Assert assertion = Assert.getAssert(RenderWorkersConfigurationAccessor.class.getName());
+	public final static Assert assertion = Assert.getAssert(MaxFrameCount.class.getName());
 
 	/**
-	 * Key in config for renderWorkers
+	 * Key in config for maxFrameCount
 	 */
-	public static final String KEY = "com.cmt.singularity.lab.gameloop.renderWorkers";
+	public static final String KEY = "com.cmt.singularity.lab.gameloop.maxFrameCount";
 
 	/**
-	 * Default in config for renderWorkers
+	 * Default in config for maxFrameCount
 	 */
-	public static final int DEFAULT = 1;
+	public static final int DEFAULT = 12;
 
-	public static int getRenderWorkers(Configuration configuration)
+	public static int get(Configuration configuration)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
 		return configuration.getInt(KEY, DEFAULT);
 	}
 
-	public static void setRenderWorkers(Configuration configuration, int renderWorkers)
+	public static void set(Configuration configuration, int maxFrameCount)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
-		configuration.set(KEY, renderWorkers);
+		configuration.set(KEY, maxFrameCount);
 	}
 
 	@SuppressWarnings("unused")
-	private RenderWorkersConfigurationAccessor()
+	private MaxFrameCount()
 	{
 		// NEVER INSTANTIATED
 	}

@@ -33,10 +33,10 @@ import com.cmt.singularity.assertion.Assert;
  *
  * @author Benjamin Schiller
  */
-public final class WorkerWorkersConfigurationAccessor implements ConfigurationAccessor
+public final class WorkerWorkers implements ConfigurationAccessor
 {
 
-	public final static Assert assertion = Assert.getAssert(WorkerWorkersConfigurationAccessor.class.getName());
+	public final static Assert assertion = Assert.getAssert(WorkerWorkers.class.getName());
 
 	/**
 	 * Key in config for workerWorkers
@@ -48,14 +48,14 @@ public final class WorkerWorkersConfigurationAccessor implements ConfigurationAc
 	 */
 	public static final int DEFAULT = 4;
 
-	public static int getWorkerWorkers(Configuration configuration)
+	public static int get(Configuration configuration)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
 		return configuration.getInt(KEY, DEFAULT);
 	}
 
-	public static void setWorkerWorkers(Configuration configuration, int workerWorkers)
+	public static void set(Configuration configuration, int workerWorkers)
 	{
 		assertion.assertNotNull(configuration, "configuration != null");
 
@@ -63,7 +63,7 @@ public final class WorkerWorkersConfigurationAccessor implements ConfigurationAc
 	}
 
 	@SuppressWarnings("unused")
-	private WorkerWorkersConfigurationAccessor()
+	private WorkerWorkers()
 	{
 		// NEVER INSTANTIATED
 	}

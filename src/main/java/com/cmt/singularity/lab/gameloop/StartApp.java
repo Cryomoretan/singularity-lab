@@ -27,8 +27,6 @@ package com.cmt.singularity.lab.gameloop;
 
 import com.cmt.singularity.Configuration;
 import com.cmt.singularity.assertion.Assert;
-import static com.cmt.singularity.lab.gameloop.RenderWorkersConfigurationAccessor.getRenderWorkers;
-import static com.cmt.singularity.lab.gameloop.WorkerWorkersConfigurationAccessor.getWorkerWorkers;
 import com.cmt.singularity.tasks.Task;
 import com.cmt.singularity.tasks.TaskGroup;
 import com.cmt.singularity.tasks.Tasks;
@@ -67,12 +65,12 @@ public class StartApp implements Task
 		log.debug("Starting App");
 
 		// Set up render group
-		int renderWorkers = getRenderWorkers(configuration);
+		int renderWorkers = RenderWorkers.get(configuration);
 		log.debug("Creating render task group with", renderWorkers, "workers");
 		tasks.createTaskGroup("Render", renderWorkers, 100, true);
 
 		// Set up worker group
-		int workerWorkers = getWorkerWorkers(configuration);
+		int workerWorkers = WorkerWorkers.get(configuration);
 		log.debug("Creating worker task group with", workerWorkers, "workers");
 		tasks.createTaskGroup("Worker", workerWorkers, 100, true);
 
