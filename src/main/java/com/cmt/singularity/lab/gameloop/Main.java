@@ -26,7 +26,7 @@ public class Main
 	{
 		// Create initial configuration
 		Configuration configuration = Configuration.create(args);
-		// Override a config value
+		// Override a config value in code
 		//setTaskGroupLog(configuration, true);
 
 		// Print configuration
