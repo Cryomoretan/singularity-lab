@@ -8,28 +8,20 @@ import com.cmt.singularity.tasks.Tasks;
 
 /**
  *
+ * Set a custom value for configurations i.e. with -com.cmt.singularity.lab.gameloop.maxFrameCount=X etc. - see
+ * ConfigurationAccessors
+ *
  * @author Benjamin Schiller
  */
 public class Main
 {
 
-	public static final String CONFIGURATION_RENDER_WORKER_KEY = "com.cmt.singularity.lab.gameloop.renderWorkers";
-	public static final int CONFIGURATION_RENDER_WORKER_DEFAULT = 1;
-
-	public static final String CONFIGURATION_WORKER_WORKER_KEY = "com.cmt.singularity.lab.gameloop.workerWorkers";
-	public static final int CONFIGURATION_WORKER_WORKER_KEY_DEFAULT = 4;
-
-	public static final String CONFIGURATION_MAX_FRAME_COUNT_KEY = "com.cmt.singularity.lab.gameloop.maxFrameCount";
-	public static final int CONFIGURATION_MAX_FRAME_COUNT_DEFAULT = 0;
-
 	public static void main(String[] args)
 	{
 		// Create initial configuration
 		Configuration configuration = Configuration.create(args);
-
-		// Set a custom fixed value for COFIGURATION_MAX_FRAME_COUNT_KEY
-		// if absent (no arg -com.cmt.singularity.lab.gameloop.maxFrameCount=X)
-		configuration.setIfAbsent(CONFIGURATION_MAX_FRAME_COUNT_KEY, 12);
+		// Override a config value
+		//setTaskGroupLog(configuration, true);
 
 		// Create engine root
 		Singularity singularity = Singularity.create(configuration);
@@ -38,7 +30,7 @@ public class Main
 		Tasks tasks = singularity.getTasks();
 
 		// Create "main thread" task group
-		TaskGroup mainGroup = tasks.createTaskGroup("Main", 1, 100, false);
+		TaskGroup mainGroup = tasks.createTaskGroup("Main", 1, 10, false);
 
 		// Create and schedule the app loop
 		Task startApp = new StartApp(configuration, tasks, mainGroup);

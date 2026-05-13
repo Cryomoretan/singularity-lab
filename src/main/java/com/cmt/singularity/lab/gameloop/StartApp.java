@@ -27,10 +27,13 @@ package com.cmt.singularity.lab.gameloop;
 
 import com.cmt.singularity.Configuration;
 import com.cmt.singularity.assertion.Assert;
-import static com.cmt.singularity.lab.gameloop.Main.*;
+import static com.cmt.singularity.lab.gameloop.RenderWorkersConfigurationAccessor.getRenderWorkers;
+import static com.cmt.singularity.lab.gameloop.WorkerWorkersConfigurationAccessor.getWorkerWorkers;
 import com.cmt.singularity.tasks.Task;
 import com.cmt.singularity.tasks.TaskGroup;
 import com.cmt.singularity.tasks.Tasks;
+import de.s42.log.LogManager;
+import de.s42.log.Logger;
 
 /**
  *
@@ -38,6 +41,8 @@ import com.cmt.singularity.tasks.Tasks;
  */
 public class StartApp implements Task
 {
+
+	private final static Logger log = LogManager.getLogger(StartApp.class.getName());
 
 	private final static Assert assertion = Assert.getAssert(StartApp.class.getName());
 
@@ -59,12 +64,16 @@ public class StartApp implements Task
 	@Override
 	public void execute()
 	{
+		log.debug("Starting App");
+
 		// Set up render group
-		int renderWorkers = configuration.getInt(CONFIGURATION_RENDER_WORKER_KEY, CONFIGURATION_RENDER_WORKER_DEFAULT);
+		int renderWorkers = getRenderWorkers(configuration);
+		log.debug("Creating render task group with", renderWorkers, "workers");
 		tasks.createTaskGroup("Render", renderWorkers, 100, true);
 
 		// Set up worker group
-		int workerWorkers = configuration.getInt(CONFIGURATION_WORKER_WORKER_KEY, CONFIGURATION_WORKER_WORKER_KEY_DEFAULT);
+		int workerWorkers = getWorkerWorkers(configuration);
+		log.debug("Creating worker task group with", workerWorkers, "workers");
 		tasks.createTaskGroup("Worker", workerWorkers, 100, true);
 
 		// End app task

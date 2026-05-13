@@ -2,7 +2,7 @@
 /*
  * The MIT License
  *
- * Copyright 2025 Cryomoretan GmbH.
+ * Copyright 2026 Cryomoretan GmbH.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,41 +25,46 @@
 //</editor-fold>
 package com.cmt.singularity.lab.gameloop;
 
+import com.cmt.singularity.Configuration;
+import com.cmt.singularity.ConfigurationAccessor;
 import com.cmt.singularity.assertion.Assert;
-import com.cmt.singularity.tasks.Task;
-import com.cmt.singularity.tasks.Tasks;
-import de.s42.log.LogManager;
-import de.s42.log.Logger;
 
 /**
  *
  * @author Benjamin Schiller
  */
-public class EndApp implements Task
+public final class RenderWorkersConfigurationAccessor implements ConfigurationAccessor
 {
 
-	private final static Logger log = LogManager.getLogger(EndApp.class.getName());
+	public final static Assert assertion = Assert.getAssert(RenderWorkersConfigurationAccessor.class.getName());
 
-	private final static Assert assertion = Assert.getAssert(EndApp.class.getName());
+	/**
+	 * Key in config for renderWorkers
+	 */
+	public static final String CONFIGURATION_RENDER_WORKERS_KEY = "com.cmt.singularity.lab.gameloop.renderWorkers";
 
-	protected final Tasks tasks;
+	/**
+	 * Default in config for renderWorkers
+	 */
+	public static final int CONFIGURATION_RENDER_WORKERS_DEFAULT = 1;
 
-	public EndApp(Tasks tasks)
+	public static int getRenderWorkers(Configuration configuration)
 	{
-		assertion.assertNotNull(tasks, "tasks != null");
+		assertion.assertNotNull(configuration, "configuration != null");
 
-		this.tasks = tasks;
+		return configuration.getInt(CONFIGURATION_RENDER_WORKERS_KEY, CONFIGURATION_RENDER_WORKERS_DEFAULT);
 	}
 
-	@Override
-	public void execute()
+	public static void setRenderWorkers(Configuration configuration, int renderWorkers)
 	{
-		// Signal app to shut down.
-		log.debug("Ending App");
+		assertion.assertNotNull(configuration, "configuration != null");
 
-		// ATTENTION: dont await() the returned barrier -> this will cause a dead lock!
-		if (!tasks.isEnding()) {
-			tasks.endGracefully();
-		}
+		configuration.set(CONFIGURATION_RENDER_WORKERS_KEY, renderWorkers);
+	}
+
+	@SuppressWarnings("unused")
+	private RenderWorkersConfigurationAccessor()
+	{
+		// NEVER INSTANTIATED
 	}
 }
