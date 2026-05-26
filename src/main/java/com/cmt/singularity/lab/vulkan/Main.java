@@ -4,7 +4,6 @@ import com.cmt.singularity.Singularity;
 import com.cmt.singularity.StandardSingularity;
 import com.cmt.singularity.assertion.Assert;
 import com.cmt.singularity.compute.Compute;
-import com.cmt.singularity.compute.ComputeGroup;
 import com.cmt.singularity.compute.Task;
 import de.s42.log.LogManager;
 import de.s42.log.Logger;
@@ -41,20 +40,17 @@ public class Main
 	public static void main(String[] args)
 	{
 
-		// Override a config value in code
-		// Print configuration
 		// Create engine root
 		Singularity singularity = new StandardSingularity();
 
-		// Get the core tasks for task execution
+		// @todo Override a config value in code
+		// @todo Load args into config
+		// @todo Print configuration
+		// Get compute for task execution
 		Compute compute = singularity.getCompute();
 
-		// Create "main thread" task group (is not a daemon -> has to be ended to close app)
-		ComputeGroup mainGroup = compute.createComputeGroup("Main", 1, 10, false);
-
 		// Start App
-		Task startApp = new StartApp(compute, mainGroup);
-		mainGroup.sequential(startApp);
-
+		Task startApp = new StartApp(compute);
+		compute.getMainGroup().sequential(startApp);
 	}
 }

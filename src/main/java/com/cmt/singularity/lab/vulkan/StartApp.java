@@ -44,21 +44,20 @@ public class StartApp implements Task
 	private final static Assert assertion = Assert.getAssert(StartApp.class.getName());
 
 	protected final Compute compute;
-	protected final ComputeGroup mainGroup;
 
-	public StartApp(Compute compute, ComputeGroup mainGroup)
+	public StartApp(Compute compute)
 	{
 		assertion.assertNotNull(compute, "tasks != null");
-		assertion.assertNotNull(mainGroup, "mainGroup != null");
 
 		this.compute = compute;
-		this.mainGroup = mainGroup;
 	}
 
 	@Override
 	public void execute()
 	{
 		log.debug("Starting App");
+
+		ComputeGroup mainGroup = compute.getMainGroup();
 
 		// Prepare Vulkan
 		// Create and schedule the init phase
