@@ -2,7 +2,7 @@
 /*
  * The MIT License
  *
- * Copyright 2026 Cryomoretan GmbH.
+ * Copyright 2025 Cryomoretan GmbH.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,48 +23,57 @@
  * THE SOFTWARE.
  */
 //</editor-fold>
-package com.cmt.singularity.lab.gameloop;
+package com.cmt.singularity.lab.vulkan;
 
-import com.cmt.singularity.Configuration;
-import com.cmt.singularity.ConfigurationAccessor;
 import com.cmt.singularity.assertion.Assert;
+import com.cmt.singularity.compute.*;
+import com.cmt.singularity.vulkan.CreateInstance;
+import com.cmt.singularity.vulkan.GlfwInit;
+import de.s42.log.LogManager;
+import de.s42.log.Logger;
 
 /**
  *
  * @author Benjamin Schiller
  */
-public final class RenderWorkers implements ConfigurationAccessor
+public class StartApp implements Task
 {
 
-	public final static Assert assertion = Assert.getAssert(RenderWorkers.class.getName());
+	private final static Logger log = LogManager.getLogger(StartApp.class.getName());
 
-	/**
-	 * Key in config for renderWorkers
-	 */
-	public static final String KEY = "com.cmt.singularity.lab.gameloop.renderWorkers";
+	private final static Assert assertion = Assert.getAssert(StartApp.class.getName());
 
-	/**
-	 * Default in config for renderWorkers
-	 */
-	public static final int DEFAULT = 1;
+	protected final Compute compute;
+	protected final ComputeGroup mainGroup;
 
-	public static int get(Configuration configuration)
+	public StartApp(Compute compute, ComputeGroup mainGroup)
 	{
-		assertion.assertNotNull(configuration, "configuration != null");
+		assertion.assertNotNull(compute, "tasks != null");
+		assertion.assertNotNull(mainGroup, "mainGroup != null");
 
-		return configuration.getInt(KEY, DEFAULT);
+		this.compute = compute;
+		this.mainGroup = mainGroup;
 	}
 
-	public static void set(Configuration configuration, int renderWorkers)
+	@Override
+	public void execute()
 	{
-		assertion.assertNotNull(configuration, "configuration != null");
+		log.debug("Starting App");
 
-		configuration.set(KEY, renderWorkers);
-	}
+		// Prepare Vulkan
+		// Create and schedule the init phase
+		Task glfwInit = new GlfwInit();
+		Task createInstance = new CreateInstance();
+		TaskBarrier initDone = mainGroup.sequentialBefore(
+			glfwInit,
+			createInstance
+		);
 
-	@SuppressWarnings("unused")
-	private RenderWorkers()
-	{
-		// NEVER INSTANTIATED
+		// Wait for init done and end app
+		Task endGracefully = new EndGracefully(compute);
+		mainGroup.sequentialAfter(initDone,
+			endGracefully
+		);
+
 	}
 }

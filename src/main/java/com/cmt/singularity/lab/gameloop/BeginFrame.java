@@ -25,10 +25,9 @@
 //</editor-fold>
 package com.cmt.singularity.lab.gameloop;
 
-import com.cmt.singularity.Configuration;
 import com.cmt.singularity.assertion.Assert;
-import com.cmt.singularity.tasks.Task;
-import com.cmt.singularity.tasks.TaskGroup;
+import com.cmt.singularity.compute.ComputeGroup;
+import com.cmt.singularity.compute.Task;
 import de.s42.log.LogManager;
 import de.s42.log.Logger;
 
@@ -43,7 +42,7 @@ public class BeginFrame implements Task
 
 	private final static Assert assertion = Assert.getAssert(BeginFrame.class.getName());
 
-	protected final TaskGroup taskGroup;
+	protected final ComputeGroup computeGroup;
 
 	protected final Task after;
 
@@ -51,19 +50,19 @@ public class BeginFrame implements Task
 
 	protected int count;
 
-	public BeginFrame(Configuration configuration, TaskGroup taskGroup, Task after)
+	public BeginFrame(ComputeGroup computeGroup, Task after)
 	{
-		assertion.assertNotNull(configuration, "configuration != null");
-		assertion.assertNotNull(taskGroup, "taskGroup != null");
+		assertion.assertNotNull(computeGroup, "computeGroup != null");
 		assertion.assertNotNull(after, "after != null");
 
-		maxCount = MaxFrameCount.get(configuration);
+		// @todo allow config
+		maxCount = 7;
 
 		assertion.assertTrue(maxCount >= 0, "maxCount >= 0");
 
 		log.debug("Creating BeginFrame with", maxCount, "max count");
 
-		this.taskGroup = taskGroup;
+		this.computeGroup = computeGroup;
 		this.after = after;
 	}
 
@@ -84,11 +83,11 @@ public class BeginFrame implements Task
 		// Repeat this task X times
 		count++;
 		if (count <= maxCount) {
-			taskGroup.parallel(this);
+			computeGroup.parallel(this);
 			return;
 		}
 
 		// Run task after if set
-		taskGroup.parallel(after);
+		computeGroup.parallel(after);
 	}
 }

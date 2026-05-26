@@ -39,8 +39,11 @@ module com.cmt.singularity.lab
 	requires org.lwjgl.opengl.natives;
 	requires org.lwjgl.stb;
 	requires org.lwjgl.assimp;
-	requires org.lwjgl.openal;
 	requires org.joml;
+	requires org.lwjgl.vulkan;
+	requires org.lwjgl.shaderc;
+	requires org.lwjgl.vma;
 
 	exports com.cmt.singularity.lab.gameloop;
+	exports com.cmt.singularity.lab.vulkan;
 }

@@ -26,8 +26,8 @@
 package com.cmt.singularity.lab.gameloop;
 
 import com.cmt.singularity.assertion.Assert;
-import com.cmt.singularity.tasks.Task;
-import com.cmt.singularity.tasks.Tasks;
+import com.cmt.singularity.compute.Compute;
+import com.cmt.singularity.compute.Task;
 import de.s42.log.LogManager;
 import de.s42.log.Logger;
 
@@ -42,13 +42,13 @@ public class EndApp implements Task
 
 	private final static Assert assertion = Assert.getAssert(EndApp.class.getName());
 
-	protected final Tasks tasks;
+	protected final Compute compute;
 
-	public EndApp(Tasks tasks)
+	public EndApp(Compute compute)
 	{
-		assertion.assertNotNull(tasks, "tasks != null");
+		assertion.assertNotNull(compute, "compute != null");
 
-		this.tasks = tasks;
+		this.compute = compute;
 	}
 
 	@Override
@@ -58,8 +58,8 @@ public class EndApp implements Task
 		log.debug("Ending App");
 
 		// ATTENTION: dont await() the returned barrier -> this will cause a dead lock!
-		if (!tasks.isEnding()) {
-			tasks.endGracefully();
+		if (!compute.isEnding()) {
+			compute.endGracefully();
 		}
 	}
 }

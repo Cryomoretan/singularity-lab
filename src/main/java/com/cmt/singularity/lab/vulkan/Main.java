@@ -1,7 +1,8 @@
-package com.cmt.singularity.lab.gameloop;
+package com.cmt.singularity.lab.vulkan;
 
 import com.cmt.singularity.Singularity;
 import com.cmt.singularity.StandardSingularity;
+import com.cmt.singularity.assertion.Assert;
 import com.cmt.singularity.compute.Compute;
 import com.cmt.singularity.compute.ComputeGroup;
 import com.cmt.singularity.compute.Task;
@@ -10,18 +11,37 @@ import de.s42.log.Logger;
 
 /**
  *
- * Set a custom value for configurations via cmd i.e. with -com.cmt.singularity.lab.gameloop.maxFrameCount=X etc. - see
- * ConfigurationAccessors or use the ConfigurationAccessors setters in Java code
+ * Simple Singularity Vulkan Demo
+ *
+ * https://vulkan.org/learn
+ *
+ * https://howtovulkan.com/
+ *
+ * https://shader-slang.org/
+ *
+ * https://github.com/LWJGL/lwjgl3-demos/tree/main/src/org/lwjgl/demo/vulkan
+ *
+ * https://github.com/Naitsirc98/Vulkan-Tutorial-Java
+ *
+ * https://www.lwjgl.org/ https://vulkan-tutorial.com/
+ *
+ * https://github.com/club-doki7/vulkan4j
  *
  * @author Benjamin Schiller
  */
 public class Main
 {
 
+	@SuppressWarnings("unused")
 	private final static Logger log = LogManager.getLogger(Main.class.getName());
+
+	@SuppressWarnings("unused")
+	private final static Assert assertion = Assert.getAssert(Main.class.getName());
 
 	public static void main(String[] args)
 	{
+
+		// Override a config value in code
 		// Print configuration
 		// Create engine root
 		Singularity singularity = new StandardSingularity();
@@ -29,11 +49,12 @@ public class Main
 		// Get the core tasks for task execution
 		Compute compute = singularity.getCompute();
 
-		// Create "main thread" task group
+		// Create "main thread" task group (is not a daemon -> has to be ended to close app)
 		ComputeGroup mainGroup = compute.createComputeGroup("Main", 1, 10, false);
 
-		// Create and schedule the app loop
+		// Start App
 		Task startApp = new StartApp(compute, mainGroup);
-		mainGroup.parallel(startApp);
+		mainGroup.sequential(startApp);
+
 	}
 }

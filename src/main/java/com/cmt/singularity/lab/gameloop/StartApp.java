@@ -25,11 +25,10 @@
 //</editor-fold>
 package com.cmt.singularity.lab.gameloop;
 
-import com.cmt.singularity.Configuration;
 import com.cmt.singularity.assertion.Assert;
-import com.cmt.singularity.tasks.Task;
-import com.cmt.singularity.tasks.TaskGroup;
-import com.cmt.singularity.tasks.Tasks;
+import com.cmt.singularity.compute.Compute;
+import com.cmt.singularity.compute.ComputeGroup;
+import com.cmt.singularity.compute.Task;
 import de.s42.log.LogManager;
 import de.s42.log.Logger;
 
@@ -44,18 +43,15 @@ public class StartApp implements Task
 
 	private final static Assert assertion = Assert.getAssert(StartApp.class.getName());
 
-	protected final Tasks tasks;
-	protected final TaskGroup mainGroup;
-	protected final Configuration configuration;
+	protected final Compute compute;
+	protected final ComputeGroup mainGroup;
 
-	public StartApp(Configuration configuration, Tasks tasks, TaskGroup mainGroup)
+	public StartApp(Compute compute, ComputeGroup mainGroup)
 	{
-		assertion.assertNotNull(configuration, "configuration != null");
-		assertion.assertNotNull(tasks, "tasks != null");
+		assertion.assertNotNull(compute, "compute != null");
 		assertion.assertNotNull(mainGroup, "mainGroup != null");
 
-		this.configuration = configuration;
-		this.tasks = tasks;
+		this.compute = compute;
 		this.mainGroup = mainGroup;
 	}
 
@@ -65,20 +61,22 @@ public class StartApp implements Task
 		log.debug("Starting App");
 
 		// Set up render group
-		int renderWorkers = RenderWorkers.get(configuration);
+		// @todo config workers
+		int renderWorkers = 4;
 		log.debug("Creating render task group with", renderWorkers, "workers");
-		tasks.createTaskGroup("Render", renderWorkers, 100, true);
+		compute.createComputeGroup("Render", renderWorkers, 100, true);
 
 		// Set up worker group
-		int workerWorkers = WorkerWorkers.get(configuration);
+		// @todo config workers
+		int workerWorkers = 4;
 		log.debug("Creating worker task group with", workerWorkers, "workers");
-		tasks.createTaskGroup("Worker", workerWorkers, 100, true);
+		compute.createComputeGroup("Worker", workerWorkers, 100, true);
 
 		// End app task
-		Task endApp = new EndApp(tasks);
+		Task endApp = new EndApp(compute);
 
 		// Create and schedule first frame begin
-		Task beginFrame = new BeginFrame(configuration, mainGroup, endApp);
+		Task beginFrame = new BeginFrame(mainGroup, endApp);
 		mainGroup.parallel(beginFrame);
 	}
 }
